@@ -4,9 +4,9 @@
 
 > **Edit this section in session 1.** It's your first commit.
 >
-> **Theme:** _which of the catalogue themes you picked_
-> **In one sentence:** _what your app will do by January_
-> **Route:** _guided or project_
+> **Theme:** Bookstore Rental
+> **In one sentence:** Who has which book, when it's due back, and what they owe.
+> **Route:** Project
 >
 > Don't write your name or your avatar here. The scoreboard is anonymous, and this file is how people would find out.
 
