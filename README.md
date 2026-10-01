@@ -2,15 +2,9 @@
 
 *The FCPL lab runs as **SharpQuest**, the quest to learn C#. That's why the tooling and some code say SharpQuest.*
 
-> **Edit this section in session 1.** It's your first commit.
->
-> **Theme:** Bookstore Rental
-> **In one sentence:** Who has which book, when it's due back, and what they owe.
-> **Route:** Project
->
-> Don't write your name or your avatar here. The scoreboard is anonymous, and this file is how people would find out.
-
----
+**Theme:** Bookstore Rental
+**In one sentence:** Who has which book, when it's due back, and what they owe.
+**Route:** Project
 
 ## Getting your own copy (session 1, browser only)
 
