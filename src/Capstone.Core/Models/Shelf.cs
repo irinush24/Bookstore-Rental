@@ -10,9 +10,10 @@ namespace Capstone.Core.Models
 
         public IReadOnlyList<IItem> All()
         {
-            if (_items.Count == 0) throw new NullReferenceException("The shelf is empty");
+            List<IItem> newList = new List<IItem>(this.Count);
 
-            return _items;
+            _items.ForEach((book) => newList.Add(book));
+            return newList;
         }
 
         public IItem? FindById(string id)
@@ -29,8 +30,10 @@ namespace Capstone.Core.Models
 
         public void Add(IItem item)
         {
-            if (item == null) throw new ArgumentNullException("Tried adding a null item to the collection");
-            if (_items.Contains(item)) throw new ArgumentException("The item you are trying to add is already inside the collection");
+            ArgumentNullException.ThrowIfNull(item, "Tried adding a null item to the collection");
+            List <String> bookIds = _items.Select(x => x.Id).ToList();
+            if (bookIds.Contains(item.Id))
+                throw new ArgumentException("The item you are trying to add is already part of the collection");
             if(item is Book book)
                 _items.Add(book);
         }

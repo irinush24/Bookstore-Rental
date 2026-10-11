@@ -1,14 +1,16 @@
-﻿using SharpQuest.Contracts;
+﻿using Capstone.Core.Models.Enums;
+using SharpQuest.Contracts;
 using System.Text.Json;
 
 namespace Capstone.Core.Models;
 
 public record BookDTO : IItemMapper
 {
-    public string Id { get; set; } = string.Empty;
-    public string DisplayName { get; set; } = string.Empty;
+    public string Id { get; set; } = null!;
 
-    public string Kind {  get; set; } = string.Empty;
+    public string DisplayName { get; set; } = null!;
+
+    public BookType Category{  get; set; }
 
     public double Price { get; set; }
 
@@ -34,15 +36,16 @@ public record BookDTO : IItemMapper
         try
         {
             dto = JsonSerializer.Deserialize<BookDTO>(json);
-            if (dto == null)
-            {
-                throw new ArgumentNullException("The JSON contains an empty object");
-            }
-            return new Book { Id = dto.Id, DisplayName = dto.DisplayName, Price = dto.Price, Kind = dto.Kind };
         }
         catch (JsonException)
         {
             return null;
         }
+
+        if(dto is null)
+            return null;
+        if (string.IsNullOrWhiteSpace(dto.Id)) return null;
+
+        return new Book { Id = dto.Id, DisplayName = dto.DisplayName, Category = dto.Category, Price = dto.Price };
     }
 }
