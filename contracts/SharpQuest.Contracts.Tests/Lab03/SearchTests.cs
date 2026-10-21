@@ -63,7 +63,7 @@ public class SearchTests
         var word = WordsOf(item.DisplayName).OrderByDescending(w => w.Length).FirstOrDefault();
         if (word is null) return;
         var vowel = word.IndexOfAny("aeiouAEIOU".ToCharArray());
-        if (vowel < 0) return;
+        if (vowel < 0) return;   // nothing to accent
 
         var accented = word[..vowel] + Accent(word[vowel]) + word[(vowel + 1)..];
         var found = Wiring.Search(store, accented).Select(i => i.Id);
@@ -78,7 +78,7 @@ public class SearchTests
         var store = StoreWith(1, 2, 3, 4);
         var item = Wiring.CreateSample(2);
         var words = WordsOf(item.DisplayName);
-        if (words.Length < 2) return;
+        if (words.Length < 2) return;   // a one-word name can't be reordered
 
         var reversed = string.Join(" ", words.Reverse());
         var found = Wiring.Search(store, reversed).Select(i => i.Id);

@@ -1,8 +1,9 @@
-﻿using SharpQuest.Contracts;
+﻿using Capstone.Core.Models.Books;
+using SharpQuest.Contracts;
 
 namespace Capstone.Core.Models
 {
-    public class Shelf: IItemStore
+    public class Library: IItemStore
     {
         private List<Book> _items = new List<Book>();
 
@@ -16,9 +17,32 @@ namespace Capstone.Core.Models
             return newList;
         }
 
+        public IReadOnlyList<string> DescribeAll()
+        {
+            List<string> descriptions = new List<string>();
+            foreach (Book book in _items)
+                descriptions.Add(book.Describe());
+            
+            return descriptions;
+        }
+
         public IItem? FindById(string id)
         {
             return _items.Find(x => x.Id == id);
+        }
+
+        public bool TryFindByName(string name, out IItem? result)
+        {
+            result = null;
+            foreach (var item in _items)
+            {
+                if (item.DisplayName == name)
+                {
+                    result = item;
+                    break;
+                }
+            }
+            return result != null;
         }
 
         public bool Remove(string id)
@@ -36,6 +60,19 @@ namespace Capstone.Core.Models
                 throw new ArgumentException("The item you are trying to add is already part of the collection");
             if(item is Book book)
                 _items.Add(book);
+        }
+
+        public int AddAll(params IItem[] items)
+        {
+            int addedItemsCount = 0;
+            foreach (var item in items)
+            {
+                var currentCount = _items.Count;
+                this.Add(item);
+                if (currentCount < _items.Count)
+                    addedItemsCount++;
+            }
+            return addedItemsCount;
         }
     }
 }

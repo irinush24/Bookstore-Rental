@@ -1,4 +1,5 @@
-﻿using Capstone.Core.Models.Interfaces;
+﻿using Capstone.Core.Models.Books;
+using Capstone.Core.Models.Interfaces;
 using SharpQuest.Contracts;
 
 namespace Capstone.Core.Models;

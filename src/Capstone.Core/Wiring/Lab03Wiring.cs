@@ -1,14 +1,15 @@
 ﻿using Capstone.Core.Models;
-using SharpQuest.Contracts;
+using Capstone.Core.Models.Books;
 using Capstone.Core.Tools;
+using SharpQuest.Contracts;
 
 namespace Capstone.Core.Wiring;
 
 public class Lab03Wiring : ILab03Wiring
 {
-    public IItem CreateSample(int seed) => new Book { Id = $"thing-{seed}", DisplayName = $"Thing number {seed}" };
+    public IItem CreateSample(int seed) => new AvailableBook { Id = $"thing-{seed}", DisplayName = $"Thing number {seed}", ShelfName = " Shelf no {seed}" };
 
-    public IItemStore CreateStore() => new Shelf();
+    public IItemStore CreateStore() => new Library();
 
     public IReadOnlyList<IItem> Search(IItemStore store, string query)
     {

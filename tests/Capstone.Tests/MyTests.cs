@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using Capstone.Core.Models;
+using Capstone.Core.Models.Books;
 using Capstone.Core.Models.Enums;
 
 namespace Capstone.Core.Tests
@@ -9,9 +10,9 @@ namespace Capstone.Core.Tests
         [Fact]
         public void Shelf_Add_DuplicateId_ThrowsArgumentException()
         {
-            var shelf = new Shelf();
-            var book1 = new Book { Id = "123", DisplayName = "Book 1" };
-            var book2 = new Book { Id = "123", DisplayName = "Book 2" };
+            var shelf = new Library();
+            var book1 = new BorrowedBook { Id = "123", DisplayName = "Book 1", BorrowerId = "345" };
+            var book2 = new AvailableBook { Id = "123", DisplayName = "Book 2", ShelfName = "Shelf #456" };
             shelf.Add(book1);
 
             var exception = Assert.Throws<ArgumentException>(() => shelf.Add(book2));
@@ -30,7 +31,7 @@ namespace Capstone.Core.Tests
         public void Customer_Borrow_AddsBookToBorrowedBooks()
         {
             var customer = new Customer { UserName = "JohnDoe" };
-            var book = new Book { Id = "b1", DisplayName = "The Hobbit" };
+            var book = new BorrowedBook { Id = "b1", DisplayName = "The Hobbit" , BorrowerId = "#456"};
 
             customer.Borrow(book);
 
@@ -42,7 +43,7 @@ namespace Capstone.Core.Tests
         public void Customer_Return_RemovesBookFromBorrowedBooks()
         {
             var customer = new Customer { UserName = "JaneDoe" };
-            var book = new Book { Id = "b2", DisplayName = "1984" };
+            var book = new AvailableBook { Id = "b2", DisplayName = "1984", ShelfName = "#678" };
             customer.Borrow(book);
 
             customer.Return(book);
@@ -56,8 +57,8 @@ namespace Capstone.Core.Tests
         [InlineData("999", false)]
         public void Shelf_FindById_ReturnsCorrectItemOrNull(string searchId, bool shouldExist)
         {
-            var shelf = new Shelf();
-            var book = new Book { Id = "100", DisplayName = "Moby Dick" };
+            var shelf = new Library();
+            var book = new AvailableBook { Id = "100", DisplayName = "Moby Dick", ShelfName = "#678" };
             shelf.Add(book);
 
             var result = shelf.FindById(searchId);
@@ -76,8 +77,8 @@ namespace Capstone.Core.Tests
         [Fact]
         public void Shelf_Remove_DeletesItemAndReturnsTrue()
         {
-            var shelf = new Shelf();
-            var book = new Book { Id = "555", DisplayName = "Dune" };
+            var shelf = new Library();
+            var book = new BorrowedBook { Id = "555", DisplayName = "Dune", BorrowerId = "#456" };
             shelf.Add(book);
 
             bool isRemoved = shelf.Remove("555");
