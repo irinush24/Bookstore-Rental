@@ -25,10 +25,10 @@ public class Lab04Wiring : ILab04Wiring
     {
         switch (kindIndex)
         {
-            case 1: { return new AvailableBook { Id = $"thing-{seed}", DisplayName = $"Thing number {seed}", ShelfName = $" Shelf no {seed}" }; }
+            case 1: { return new AvailableBook { Id = $"borrowed-{seed}", DisplayName = $"Thing number {seed}", ShelfName = $" Shelf no {seed}" }; }
             default:
                 {
-                    return new BorrowedBook { Id = $"thing-{seed}", DisplayName = $"Thing number {seed}", BorrowerId = $"client#{seed}" };
+                    return new BorrowedBook { Id = $"available-{seed}", DisplayName = $"Thing number {seed}", BorrowerId = $"client#{seed}" };
                 }
         }
     }
