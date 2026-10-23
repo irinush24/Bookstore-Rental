@@ -8,23 +8,19 @@ namespace Capstone.Core.Models.DTOs;
 public record BookDTO : IItemMapper
 {
     public string Id { get; set; } = null!;
-
     public string DisplayName { get; set; } = null!;
-
     public BookType Category{  get; set; }
-
     public double Price { get; set; }
-
     public string? BorrowerId { get; set; }
-
     public string? ShelfName { get; set; }
 
     public string ToJson(IItem item)
     {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive  = true };
         string JsonString;
         try 
         {
-            JsonString = JsonSerializer.Serialize(item); 
+            JsonString = JsonSerializer.Serialize(item, item.GetType(), options); 
     }
         catch (JsonException e)
         {
@@ -36,6 +32,7 @@ public record BookDTO : IItemMapper
 
     public IItem? FromJson(string json)
     {
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         BookDTO? dto;
 
         try
@@ -46,12 +43,26 @@ public record BookDTO : IItemMapper
         {
             return null;
         }
-
-        if(dto is null)
+        if (dto is null || string.IsNullOrWhiteSpace(dto.Id))
             return null;
-        if (string.IsNullOrWhiteSpace(dto.Id)) return null;
-        if(dto.ShelfName == null) return new BorrowedBook { BorrowerId = dto.BorrowerId?? throw new ArgumentNullException("Cannot instantiate an object with a null ID attribute"), Category = dto.Category, Price = dto.Price, DisplayName = dto.DisplayName, Id = dto.Id};
 
-        return new AvailableBook { Id = dto.Id, DisplayName = dto.DisplayName, Category = dto.Category, Price = dto.Price, ShelfName = dto.ShelfName };
+        if(dto.BorrowerId != null)
+            return new BorrowedBook 
+            {
+                Id = dto.Id,
+                BorrowerId = dto.BorrowerId,
+                Category = dto.Category,
+                Price = dto.Price,
+                DisplayName = dto.DisplayName ?? "Unknown"
+            };
+
+        return new AvailableBook 
+        { 
+            Id = dto.Id,
+            DisplayName = dto.DisplayName ?? "Unknown",
+            Category = dto.Category,
+            Price = dto.Price,
+            ShelfName = dto.ShelfName ?? "Unknown shelf"
+        };
     }
 }
