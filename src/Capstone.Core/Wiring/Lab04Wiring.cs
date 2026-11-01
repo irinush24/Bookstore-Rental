@@ -1,6 +1,5 @@
 ﻿using Capstone.Core.Models;
 using Capstone.Core.Models.Books;
-using Capstone.Core.Tools;
 using SharpQuest.Contracts;
 
 namespace Capstone.Core.Wiring;

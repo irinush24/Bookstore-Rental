@@ -1,13 +1,27 @@
-﻿using Capstone.Core.Models.Books;
+﻿using System.Collections;
+using Capstone.Core.Models.Books;
 using SharpQuest.Contracts;
 
 namespace Capstone.Core.Models
 {
-    public class Library: IItemStore
+    public class Library: IItemStore, IEnumerable<IItem>
     {
         private List<Book> _items = new List<Book>();
+        private readonly Dictionary<string, Book> _byId = new (StringComparer.Ordinal);
 
         public int Count => _items.Count;
+
+        public IItem this[int index]
+        {
+            get
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(index);
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _items.Count);
+                return _items[index];
+            }
+        }
+
+        public IItem? this[string id] => FindById(id);
 
         public IReadOnlyList<IItem> All()
         {
@@ -73,6 +87,29 @@ namespace Capstone.Core.Models
                     addedItemsCount++;
             }
             return addedItemsCount;
+        }
+
+        public IEnumerator<IItem> GetEnumerator()
+        {
+            foreach(var item in _items)
+            {
+                // Pauses execution and hands back the item
+                yield return item;
+            }
+        }
+
+        // Required by the C# interface
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        
+        public IEnumerable<IItem> Matching(string text)
+        {
+            ArgumentNullException.ThrowIfNull(text);
+
+            foreach(var item in _items)
+            {
+                if (item.DisplayName.Contains(text, StringComparison.OrdinalIgnoreCase))
+                    yield return item;
+            }
         }
     }
 }
