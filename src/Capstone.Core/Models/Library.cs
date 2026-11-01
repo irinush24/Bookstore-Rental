@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using Capstone.Core.Models.Books;
 using SharpQuest.Contracts;
 
@@ -8,6 +9,8 @@ namespace Capstone.Core.Models
     {
         private List<Book> _items = new List<Book>();
         private readonly Dictionary<string, Book> _byId = new (StringComparer.Ordinal);
+
+        public event Action<IItem>? ItemAdded; 
 
         public int Count => _items.Count;
 
@@ -72,8 +75,11 @@ namespace Capstone.Core.Models
             List <String> bookIds = _items.Select(x => x.Id).ToList();
             if (bookIds.Contains(item.Id))
                 throw new ArgumentException("The item you are trying to add is already part of the collection");
-            if(item is Book book)
+            if (item is Book book)
+            {
                 _items.Add(book);
+                ItemAdded?.Invoke(book);
+            }
         }
 
         public int AddAll(params IItem[] items)
@@ -110,6 +116,31 @@ namespace Capstone.Core.Models
                 if (item.DisplayName.Contains(text, StringComparison.OrdinalIgnoreCase))
                     yield return item;
             }
+        }
+
+        public void ForEach(Action<IItem> action)
+        {
+            ArgumentNullException.ThrowIfNull(action);
+
+            foreach(var item in _items)
+                action(item);
+        }
+
+        public IEnumerable<IItem> Where(Func<IItem, bool> predicate)
+        {
+            ArgumentNullException.ThrowIfNull(predicate);
+
+            foreach(var item in _items)
+                if (predicate(item))
+                    yield return item;
+        }
+
+        public IEnumerable<string> Map(Func<IItem, string> mapFunc)
+        {
+            ArgumentNullException.ThrowIfNull(mapFunc);
+
+            foreach (var item in _items)
+                yield return mapFunc(item);
         }
     }
 }
