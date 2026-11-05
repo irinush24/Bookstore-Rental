@@ -1,5 +1,30 @@
-// Your capstone starts here. Run it with:  dotnet run --project src/Capstone.App
-//
-// Keep this file short. Real logic belongs in Capstone.Core, where the tests can reach it.
+using Capstone.Core.Models;
+using Capstone.Core.Models.Books;
+using Capstone.Core.Services;
 
-Console.WriteLine("My capstone — nothing here yet. Session 2 changes that.");
+class Program
+{
+    static void Main(string[] args)
+    {
+        var library = new Library();
+        var emailApp = new EmailNotificationService();
+
+        library.BookOverdue += emailApp.SendEmail;
+
+        var dailyTimer = new System.Timers.Timer(5000);
+
+        dailyTimer.Elapsed += (sender, e) =>
+        {
+            library.CheckForOverdueBooks();
+        };
+
+        dailyTimer.AutoReset = true;
+        dailyTimer.Start();
+
+        Console.WriteLine("Bookstore system is running. Press Enter to exit...");
+
+         library.Add(new BorrowedBook { Id = "123", BorrowerId = "user1", DueDate = DateTime.Now.AddDays(-1) });
+
+        Console.ReadLine();
+    }
+}

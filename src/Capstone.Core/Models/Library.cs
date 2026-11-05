@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System;
 using Capstone.Core.Models.Books;
 using SharpQuest.Contracts;
 
@@ -10,7 +9,9 @@ namespace Capstone.Core.Models
         private List<Book> _items = new List<Book>();
         private readonly Dictionary<string, Book> _byId = new (StringComparer.Ordinal);
 
-        public event Action<IItem>? ItemAdded; 
+        public event Action<IItem>? ItemAdded;
+
+        public event Action<BorrowedBook, string>? BookOverdue;
 
         public int Count => _items.Count;
 
@@ -99,12 +100,10 @@ namespace Capstone.Core.Models
         {
             foreach(var item in _items)
             {
-                // Pauses execution and hands back the item
                 yield return item;
             }
         }
 
-        // Required by the C# interface
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         
         public IEnumerable<IItem> Matching(string text)
@@ -141,6 +140,16 @@ namespace Capstone.Core.Models
 
             foreach (var item in _items)
                 yield return mapFunc(item);
+        }
+
+        public void CheckForOverdueBooks()
+        {
+            foreach(var item in _items)
+            {
+                if (item is BorrowedBook borrowedBook)
+                    BookOverdue?.Invoke(borrowedBook, borrowedBook.BorrowerId);
+
+            }
         }
     }
 }

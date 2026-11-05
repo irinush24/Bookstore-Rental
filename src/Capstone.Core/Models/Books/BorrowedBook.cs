@@ -4,6 +4,8 @@ public class BorrowedBook : Book
 {    
     public required string BorrowerId { get; set; }
 
+    public DateTime DueDate { get; set; }
+
     public override string Describe()
     {
         return "Borrowed Book";
