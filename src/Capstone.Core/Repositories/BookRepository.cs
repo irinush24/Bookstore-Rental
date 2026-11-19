@@ -15,10 +15,9 @@ public class BookRepository
 
     public static async Task SaveAsync(IItemStore store, String path)
     {
-        if (store == null)
-            throw new ArgumentNullException("The store is empty");
-        if (String.IsNullOrWhiteSpace(path) || path.Equals(string.Empty))
-            throw new ArgumentException("The path for saving is empty");
+        ArgumentNullException.ThrowIfNull(store);
+        ArgumentNullException.ThrowIfNull(path);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
 
         var directory = Path.GetDirectoryName(path);
         if(!string.IsNullOrEmpty(directory))
