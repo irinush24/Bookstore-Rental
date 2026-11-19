@@ -17,12 +17,12 @@ public class BookRepository
     {
         if (store == null)
             throw new ArgumentNullException("The store is empty");
-        if (path == null)
+        if (String.IsNullOrWhiteSpace(path) || path.Equals(string.Empty))
             throw new ArgumentException("The path for saving is empty");
 
         var directory = Path.GetDirectoryName(path);
-        if (!string.IsNullOrEmpty(directory))
-            throw new InvalidOperationException("Cannot save to incomplete path");
+        if(!string.IsNullOrEmpty(directory))
+            Directory.CreateDirectory(directory);
 
         var rows = store.All().Select(BookDTO.FromDomain).ToList();
 
